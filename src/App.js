@@ -17,7 +17,6 @@ function App() {
   };
 
   const addContact = async (contact) => {
-    console.log(contact);
     const request = {
       name,
       email,
@@ -25,7 +24,14 @@ function App() {
     };
 
     const response = await api.post("/contacts", request);
+    console.log(response, "res");
     setContacts([...contact, response.data]);
+  };
+
+  const deleteContact = async (id) => {
+    await api.delete(`/contacts/${id}`);
+    const newContactList = contacts.filter((contact) => contact.id !== id + 1);
+    setContacts(newContactList);
   };
 
   useEffect(() => {
@@ -39,7 +45,7 @@ function App() {
 
   return (
     <div className='App'>
-      <h1 style={{ textAlign: "center" }}>Basic CRUD</h1>
+      <h1 style={{ textAlign: "center", background: "grey" }}>Basic CRUD</h1>
       <div className='container'>
         <input
           type='text'
@@ -56,12 +62,12 @@ function App() {
 
         <div>
           {contacts.map((x, index) => (
-            <>
-              <li key={index}>{x.name}</li>
-              <div key={index}>{x.email}</div>
+            <div key={index}>
+              <li>{x.name}</li>
+              <div>{x.email}</div>
               <button>Edit</button>
-              <button>Delete</button>
-            </>
+              <button onClick={() => deleteContact(index)}>Delete</button>
+            </div>
           ))}
         </div>
       </div>
